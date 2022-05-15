@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/smit/static/css/main.d80e6282.css",
+    "main.js": "/smit/static/js/main.33f5b6a4.js",
+    "index.html": "/smit/index.html",
+    "main.d80e6282.css.map": "/smit/static/css/main.d80e6282.css.map",
+    "main.33f5b6a4.js.map": "/smit/static/js/main.33f5b6a4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d80e6282.css",
+    "static/js/main.33f5b6a4.js"
+  ]
+}
