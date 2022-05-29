@@ -1,4 +1,5 @@
-const url = "https://smitbs.herokuapp.com/api";
+// const url = "https://smitbs.herokuapp.com/api";
+const url = "http://localhost:5000/api";
 
 export const api = {
   // Authentication
@@ -40,6 +41,10 @@ export const api = {
   }),
   addCourses: () => ({
     url: `${url}/courses/addCourse`,
+    method: "post",
+  }),
+  enrollInCourse: (courseId) => ({
+    url: `${url}/courses/enroll/${courseId}`,
     method: "post",
   }),
 };

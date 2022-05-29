@@ -13,6 +13,8 @@ const AdminHomePage = () => {
     (state) => state.courses.getCourses
   );
   const adminLoggedIn = useSelector((state) => state.auth.admin.isLoggedIn);
+  const { user } = useSelector((state) => state.auth);
+
   const [courses, setCourses] = useState([]);
 
   const [open, setOpen] = useState(false);

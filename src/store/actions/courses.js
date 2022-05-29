@@ -16,7 +16,9 @@ export const getCourses = createAsyncThunk("getCourse", async (thunkApi) => {
   try {
     const response = await axios[api.getCourses().method](
       api.getCourses().url,
-      headers(),
+      {
+        headers: headers(),
+      },
       null
     );
     return response.data;
@@ -36,6 +38,26 @@ export const addCourses = createAsyncThunk(
         data,
         {
           headers: adminHeaders(),
+        }
+      );
+      return response.data;
+    } catch (e) {
+      return thunkApi.rejectWithValue(
+        (!!e.response && e.response.data.error) || e.message
+      );
+    }
+  }
+);
+
+export const enrollInCourse = createAsyncThunk(
+  "enrollInCourse",
+  async ({ data, id }, thunkApi) => {
+    try {
+      const response = await axios[api.enrollInCourse().method](
+        api.enrollInCourse(id).url,
+        data,
+        {
+          headers: headers(),
         }
       );
       return response.data;

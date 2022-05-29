@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addCourses, getCourses } from "../actions/courses";
+import { addCourses, enrollInCourse, getCourses } from "../actions/courses";
 
 const initialState = {
   getCourses: {
+    data: [],
+    loading: null,
+    error: null,
+  },
+  enrollInCourse: {
     data: [],
     loading: null,
     error: null,
@@ -48,6 +53,23 @@ const courseSlice = createSlice({
       state.addCourses.loading = null;
       state.addCourses.error = action.payload;
     },
+
+    [enrollInCourse.pending]: (state) => {
+      state.enrollInCourse.status = "pending";
+      state.enrollInCourse.loading = true;
+      state.enrollInCourse.error = null;
+    },
+    [enrollInCourse.fulfilled]: (state, action) => {
+      state.enrollInCourse.status = "fulfilled";
+      state.enrollInCourse.loading = false;
+      state.enrollInCourse.error = null;
+      state.enrollInCourse.data = action.payload;
+    },
+    [enrollInCourse.rejected]: (state, action) => {
+      state.enrollInCourse.status = "rejected";
+      state.enrollInCourse.loading = null;
+      state.enrollInCourse.error = action.payload;
+    },
   },
   reducers: {
     resetState: (state) => {
@@ -56,7 +78,14 @@ const courseSlice = createSlice({
       state.addCourses.status = null;
       console.log("reseted");
     },
+    clearEnrollState: (state) => {
+      state.enrollInCourse = {
+        data: [],
+        loading: null,
+        error: null,
+      };
+    },
   },
 });
 export default courseSlice.reducer;
-export const { resetState } = courseSlice.actions;
+export const { resetState, clearEnrollState } = courseSlice.actions;

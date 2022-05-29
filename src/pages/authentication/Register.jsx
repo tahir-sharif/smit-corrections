@@ -43,7 +43,7 @@ const Register = () => {
     const today = new Date();
     const dd = String(today.getDate()).padStart(2, "0");
     const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-    const yyyy = today.getFullYear();
+    const yyyy = today.getFullYear() - 17;
     return yyyy + "-" + mm + "-" + dd;
   };
 
@@ -72,6 +72,13 @@ const Register = () => {
           name="email"
           required
           placeholder="Enter Email"
+        />
+        <Input
+          className="form-control"
+          type="text"
+          name="cnic"
+          required
+          placeholder="Enter Your CNIC No."
         />
         <Input
           className="form-control"
@@ -122,10 +129,10 @@ const Register = () => {
           </Box>
         ) : (
           <>
-            <Button className=" form-btn" type="submit" variant="contained">
+            <Button className="form-btn" type="submit" variant="contained">
               Sign Up
             </Button>
-            <Link className="link" to="/login">
+            <Link className="link" to="/smit-corrections/login">
               Already have an account ? Login
             </Link>
           </>

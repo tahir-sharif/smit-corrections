@@ -3,15 +3,27 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
+import { Button, CardActionArea, CardActions, Box } from "@mui/material";
 import EnrollCourse from "../dialogs/EnrollCourse";
 import EditCourse from "../dialogs/EditCourse";
+import { useNavigate } from "react-router-dom";
+import defaultImage from "../../assets/images/smit.png";
 
-const CourseCard = ({ courseData, adminLoggedIn }) => {
+const CourseCard = ({
+  courseData,
+  adminLoggedIn,
+  userLoggedIn,
+  currentUser,
+}) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    if (userLoggedIn) {
+      setOpen(true);
+    } else {
+      navigate("/smit-corrections/login");
+    }
   };
 
   const handleClose = () => {
@@ -27,33 +39,36 @@ const CourseCard = ({ courseData, adminLoggedIn }) => {
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
+  let enrolled = false;
+  if (currentUser) {
+    const me = currentUser._id;
+    enrolled = courseData.students.includes(me);
+    console.log(courseData.students, me);
+  }
   return (
     <Card sx={{ maxWidth: 340, m: 1.5, mt: 2 }}>
       <EnrollCourse
         open={open}
-        heading={
-          <Typography sx={{ mb: 2 }} component={"span"} fontWeight="600">
-            {courseData.name}
-          </Typography>
-        }
+        heading={courseData.name}
+        id={courseData._id}
         handleClickOpen={handleClickOpen}
         handleClose={handleClose}
       />
       <EditCourse
-        open={open}
+        open={openEdit}
         heading={
           <Typography sx={{ mb: 2 }} component={"span"} fontWeight="600">
             {courseData.name}
           </Typography>
         }
         handleClickOpen={handleClickOpen}
-        handleClose={handleClose}
+        handleClose={handleCloseEdit}
       />
       <CardActionArea>
         <CardMedia
           component="img"
           height="250"
-          image="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
+          image={defaultImage}
           alt="green iguana"
         />
         <CardContent>
@@ -67,7 +82,7 @@ const CourseCard = ({ courseData, adminLoggedIn }) => {
           <Typography sx={{ color: "red", pr: 3 }}>Closed</Typography>
         ) : adminLoggedIn ? (
           <Button
-            onClick={handleClickOpen}
+            onClick={handleClickOpenEdit}
             disabled={courseData.isClosed}
             variant="contained"
             color="primary"
@@ -75,14 +90,32 @@ const CourseCard = ({ courseData, adminLoggedIn }) => {
             Edit
           </Button>
         ) : (
-          <Button
-            onClick={handleClickOpen}
-            disabled={courseData.isClosed}
-            variant="contained"
-            color="primary"
-          >
-            Enroll Now
-          </Button>
+          <>
+            {enrolled ? (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography color="#029e02">
+                  Your now are a part of this course !
+                </Typography>
+                <Button>Apply for Leave</Button>
+              </Box>
+            ) : (
+              <Button
+                onClick={handleClickOpen}
+                disabled={courseData.isClosed}
+                variant="contained"
+                color="primary"
+              >
+                Enroll Now
+              </Button>
+            )}
+          </>
         )}
       </CardActions>
     </Card>

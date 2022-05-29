@@ -8,9 +8,11 @@ import MinLoader from "../../components/loaders/MiniLoader";
 
 const ViewCourses = () => {
   const dispatch = useDispatch();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   const { data, loading, error } = useSelector(
     (state) => state.courses.getCourses
   );
+  
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -44,7 +46,14 @@ const ViewCourses = () => {
           <>
             {courses.length ? (
               courses.map((courseData, i) => {
-                return <CourseCard key={i} courseData={courseData} />;
+                return (
+                  <CourseCard
+                    key={i}
+                    courseData={courseData}
+                    currentUser={user}
+                    userLoggedIn={isLoggedIn}
+                  />
+                );
               })
             ) : (
               <Typography sx={{ m: "auto" }}>

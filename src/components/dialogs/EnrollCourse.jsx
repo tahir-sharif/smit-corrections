@@ -7,16 +7,34 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
-import { Grid, MenuItem, Select, TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { Box } from "@mui/system";
+import { useDispatch, useSelector } from "react-redux";
+import { enrollInCourse, getCourses } from "../../store/actions/courses";
+import { clearEnrollState } from "../../store/reducers/course";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreenDialog({ handleClose, open, heading }) {
-  const inputHandler = () => {};
-
+export default function FullScreenDialog({ handleClose, open, heading, id }) {
+  const [cnic, setcnic] = React.useState("");
+  const dispatch = useDispatch();
+  const inputHandler = (e) => {
+    setcnic(e.target.value);
+  };
+  const { loading, error, status } = useSelector(
+    (state) => state.courses.enrollInCourse
+  );
+  if (status === "fulfilled") {
+    handleClose();
+    dispatch(clearEnrollState());
+    dispatch(getCourses());
+  }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(enrollInCourse({ data: { cnic }, id }));
+  };
   return (
     <div>
       <Dialog
@@ -42,72 +60,33 @@ export default function FullScreenDialog({ handleClose, open, heading }) {
         </AppBar>
 
         <Box sx={{ m: "auto", mt: 6, width: 0.7 }}>
-          <Typography sx={{ my: 2 }}>Filling For {heading} Course</Typography>
-          <form>
+          <Typography variant="h4" sx={{ my: 2 }}>
+            Filling For {heading} Course
+          </Typography>
+          <form onSubmit={submitHandler}>
             <Grid container spacing={3} rowSpacing={5}>
               <Grid item xs={6}>
-                <Typography fontSize={10} textAlign={"left"}>
-                  Full name
-                </Typography>
+                {error ? (
+                  <Typography sx={{ my: 2, color: "red" }}>{error}</Typography>
+                ) : (
+                  <Typography fontSize={14} sx={{ my: 2 }} textAlign={"left"}>
+                    Kindly Confirm your CNIC Number !
+                  </Typography>
+                )}
                 <TextField
                   onChange={inputHandler}
                   name="fullName"
-                  placeholder="Full name"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography fontSize={10} textAlign={"left"}>
-                  Father name
-                </Typography>
-                <TextField
-                  onChange={inputHandler}
-                  name="fatherName"
-                  placeholder="Father name"
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <Typography fontSize={10} textAlign={"left"}>
-                  Email
-                </Typography>
-                <TextField
-                  onChange={inputHandler}
-                  name="email"
-                  placeholder="Email"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography fontSize={10} textAlign={"left"}>
-                  CNIC No.
-                </Typography>
-                <TextField
-                  onChange={inputHandler}
-                  name="cnic"
+                  required
+                  type={"number"}
                   placeholder="CNIC No."
                   fullWidth
                 />
               </Grid>
-
-              <Grid item xs={6}>
-                <Typography fontSize={10} textAlign={"left"}>
-                  Roll No.
-                </Typography>
-                <TextField
-                  onChange={inputHandler}
-                  name="rollNo"
-                  placeholder="Roll No."
-                  fullWidth
-                />
-              </Grid>
             </Grid>
-            <Grid container sx={{ mt: 4 }}>
-              <Grid item xs={6}></Grid>
-              <Grid item xs={6} sx={{ textAlign: "right" }}>
-                <Button variant="contained" type="submit">
-                  Submit
+            <Grid container spacing={3} rowSpacing={5}>
+              <Grid item xs={12}>
+                <Button disabled={loading} type="submit" sx={{ mt: 2 }}>
+                  Okay
                 </Button>
               </Grid>
             </Grid>
